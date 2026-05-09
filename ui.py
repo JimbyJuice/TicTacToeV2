@@ -57,7 +57,7 @@ class TicTacToeUI:
     def _highlight_win(self):
         winningCells = self.game.get_winner_cells()
         for r, c in winningCells:
-            self.buttons[r][c].config(bg="#39ff14")
+            self.buttons[r][c].config(bg="#39ff14",activebackground="#39ff14", highlightbackground="#39ff14" )
     
     def _on_click(self, row, col):
         if not self.game.make_move(row, col):
@@ -83,28 +83,34 @@ class TicTacToeUI:
             
         winner = self.game.check_winner()
         if winner is not None:
-            self._highlight_win()
-            if winner == PLAYER1:
-                self.statusLabel.config(text=f"*** Player {1} is the winner! ***")
-            elif winner == PLAYER2:
-                self.statusLabel.config(text=f"*** Player {2} is the winner! ***")
+            # clear warning cells
+            if self.warnedCell is not None:
+                r, c = self.warnedCell
+                self._style_button(r,c)
+                self.warnedCell = None
                 
+            self._highlight_win()
+            winnerNum = 1 if winner == PLAYER1 else 2
+            self.statusLabel.config(text=f"*** Player {winnerNum} is the winner! ***")
             for row in self.buttons:
                 for btn in row:
-                    btn.config(state=tk.DISABLED)
+                    btn.config(command=lambda: None)
         else:
             current = self.game.currentPlayer
-            if current == PLAYER1:
-                self.statusLabel.config(text=f"Player {1}'s turn ({playerToMove[current]})")
-            elif current == PLAYER2:
-                self.statusLabel.config(text=f"Player {2}'s turn ({playerToMove[current]})")
+            currentNum = 1 if current == PLAYER1 else 2
+            self.statusLabel.config(text=f"Player {currentNum}'s turn ({playerToMove[current]})")
     
     def run(self):
         self.window.mainloop()
         
     def _reset(self):
         self.game._reset()
-        for row in self.buttons:
-            for btn in row:
-                btn.config(text=UNSET, state=tk.NORMAL, bg="#1a1a2e", fg="#ffffff",  activebackground="#2a2a4e", highlightbackground="#1a1a2e", highlightthickness=0)
+        for row in range(3):
+            for col in range(3):
+                self.buttons[row][col].config(
+                    text=UNSET, bg="#1a1a2e", 
+                    fg="#ffffff",  activebackground="#2a2a4e", 
+                    highlightbackground="#1a1a2e", highlightthickness=0,
+                    command=lambda r=row, c=col: self._on_click(r, c)
+                )
         self.statusLabel.config(text="Player 1's turn (O)", fg="#ffffff")
