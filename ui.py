@@ -30,18 +30,20 @@ class TicTacToeUI:
             return
         
         self.buttons[row][col].config(text=self.game.get_symbol(row, col))
+        
         if self.game.expiredCell is not None:
-            expiredCell = self.game.expiredCell
-            self.buttons[expiredCell[0]][expiredCell[1]].config(text=" ")
+            r, c = self.game.expiredCell
+            self.buttons[r][c].config(text=" ")
             
         winner = self.game.check_winner()
         if winner is not None:
             self.statusLabel.config(text=f"*** Player {winner} is the winner! ***")
             for row in self.buttons:
-                for col in row:
-                    self.buttons[row][col].config(state=tk.DISABLED)
+                for btn in row:
+                    btn.config(state=tk.DISABLED)
         else:
-            self.statusLabel.config(text=f"Player {self.game.currentPlayer}'s turn ({playerToMove[self.game.currentPlayer]})")
+            current = self.game.currentPlayer
+            self.statusLabel.config(text=f"Player {current}'s turn ({playerToMove[current]})")
     
     def run(self):
         self.window.mainloop()
