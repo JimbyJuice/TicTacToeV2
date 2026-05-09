@@ -15,8 +15,8 @@ moveToPlayer = {KNOT: PLAYER1, CROSS: PLAYER2}
 # play AI mode
 # real time multiplayer
 def checkVertical(board: list[list[chr]], playerSymbol: str):
-    for c in range(3):
-        if board[0][c] == playerSymbol and board[1][c] == playerSymbol and board[2][c] == playerSymbol:
+    for col in range(3):
+        if board[0][col] == playerSymbol and board[1][col] == playerSymbol and board[2][col] == playerSymbol:
             return True
     return None
 
@@ -26,7 +26,7 @@ def checkDiagonal(board: list[list[chr]], playerSymbol: str):
     if board[0][2] == playerSymbol and board[1][1] == playerSymbol and board[2][0] == playerSymbol:
         return True
     return None
-    
+
 class TicTacToeGame:
     def __init__(self):
         self.board = [
@@ -74,26 +74,6 @@ class TicTacToeGame:
             return PLAYER2
         
         return None
-    
-    def get_winner_cells(self):
-        # check horizontal
-        for r in range(3):
-            row = self.board[r]
-            if len(set(row)) == 1 and UNSET not in row:
-                return [(r, 0), (r, 1), (r, 2)]    
-        
-        # check columns
-        for c in range(3):
-            if self.board[0][c] == self.board[1][c] == self.board[2][c] != UNSET:
-                return [(0, c), (1, c), (2, c)]
-        
-        # check diagonal
-        if self.board[0][0] == self.board[1][1] == self.board[2][2] != UNSET:
-            return [(0, 0), (1, 1), (2, 2)]
-        if self.board[0][2] == self.board[1][1] == self.board[2][0] != UNSET:
-            return [(0, 2), (1, 1), (2, 0)]
-        
-        return []
     
     def get_symbol(self, row, col) -> str:
         return self.board[row][col]
